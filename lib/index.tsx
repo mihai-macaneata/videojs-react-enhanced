@@ -1,17 +1,19 @@
-import React, { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import videojs, { VideoJsPlayer } from 'video.js';
+import React, { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import videojs, { VideoJsPlayer } from "video.js";
 import {
   initializeEventListeners,
   initializePlayerComponentsDisplay,
   filterPlugins,
   generatePlayerOptions,
   initializePlayer,
-} from './utils/index';
-import 'video.js/dist/video-js.css';
+} from "./utils/index";
+import "video.js/dist/video-js.css";
 
-function Player(props: Player.PlayerProps):JSX.Element {
-  let playerRef: React.RefObject<HTMLVideoElement> = useRef<HTMLVideoElement>(null);
+function Player(props: Player.PlayerProps): JSX.Element {
+  let playerRef: React.RefObject<HTMLVideoElement> = useRef<HTMLVideoElement>(
+    null
+  );
   let player: Player.IVideoJsPlayer;
   let autoPlugins: Player.IIndexableObject | undefined;
   let manualPlugins: Array<Player.IVideoJsPlugin> = [];
@@ -20,7 +22,10 @@ function Player(props: Player.PlayerProps):JSX.Element {
     [autoPlugins, manualPlugins] = filterPlugins(props.videojsOptions?.plugins);
   }
 
-  const playerOptions: videojs.PlayerOptions = generatePlayerOptions(props, autoPlugins);
+  const playerOptions: videojs.PlayerOptions = generatePlayerOptions(
+    props,
+    autoPlugins
+  );
 
   useEffect(() => {
     player = initializePlayer(playerRef.current, playerOptions, manualPlugins);
@@ -29,18 +34,14 @@ function Player(props: Player.PlayerProps):JSX.Element {
     props.onReady && props.onReady(player);
 
     return (): void => {
-      if (player)
-        player.dispose();
-    }
+      if (player) player.dispose();
+    };
   }, []);
 
   return (
     <div>
       <div data-vjs-player>
-        <video
-          ref={playerRef}
-          className={`video-js`}
-        />
+        <video playsInline={true} ref={playerRef} className={`video-js`} />
       </div>
     </div>
   );
@@ -56,21 +57,21 @@ namespace Player {
   }
 
   export interface IPlayerOptions {
-    autoplay?: 'muted' | 'play' | 'any';
+    autoplay?: "muted" | "play" | "any";
     controls?: boolean;
     height?: number;
     loop?: boolean;
     muted?: boolean;
-    preload?: 'auto' | 'metadata' | 'none';
+    preload?: "auto" | "metadata" | "none";
     src?: string;
     width?: number;
   }
-  
+
   export interface IResources {
     sources?: Array<videojs.Tech.SourceObject>;
     poster?: string;
   }
-  
+
   export interface IVideoJsOptions {
     aspectRatio?: string;
     fluid?: boolean;
@@ -88,21 +89,46 @@ namespace Player {
     plugin?: (option: object) => void;
     options: object;
   }
-  
+
   export interface PlayerProps {
     playerOptions?: IPlayerOptions;
     resources?: IResources;
     videojsOptions?: IVideoJsOptions;
     hideList?: Array<string>;
-  
+
     // Custom Event Handlers
     onReady?: (player: VideoJsPlayer) => void;
-    onPlay?: (event: EventTarget, player: VideoJsPlayer, currentTimeSecond: number) => void;
-    onPause?: (event: EventTarget, player: VideoJsPlayer, currentTimeSecond: number) => void;
-    onWaiting?: (event: EventTarget, player: VideoJsPlayer, currentTimeSecond: number) => void;
-    onTimeUpdate?: (event: EventTarget, player: VideoJsPlayer, currentTimeSecond: number) => void;
-    onSeeking?: (event: EventTarget, player: VideoJsPlayer, startTimeSecond: number) => void;
-    onSeeked?: (event: EventTarget, player: VideoJsPlayer, startTimeSecond: number, finishTimeSecond: number) => void;
+    onPlay?: (
+      event: EventTarget,
+      player: VideoJsPlayer,
+      currentTimeSecond: number
+    ) => void;
+    onPause?: (
+      event: EventTarget,
+      player: VideoJsPlayer,
+      currentTimeSecond: number
+    ) => void;
+    onWaiting?: (
+      event: EventTarget,
+      player: VideoJsPlayer,
+      currentTimeSecond: number
+    ) => void;
+    onTimeUpdate?: (
+      event: EventTarget,
+      player: VideoJsPlayer,
+      currentTimeSecond: number
+    ) => void;
+    onSeeking?: (
+      event: EventTarget,
+      player: VideoJsPlayer,
+      startTimeSecond: number
+    ) => void;
+    onSeeked?: (
+      event: EventTarget,
+      player: VideoJsPlayer,
+      startTimeSecond: number,
+      finishTimeSecond: number
+    ) => void;
     onEnded?: (event: EventTarget, player: VideoJsPlayer) => void;
     onError?: (error: MediaError, player: VideoJsPlayer) => void;
     onLoadedData?: (event: EventTarget, player: VideoJsPlayer) => void;
@@ -114,21 +140,23 @@ Player.propTypes = {
   playerOptions: PropTypes.shape({
     autoplay: PropTypes.oneOfType([
       PropTypes.bool,
-      PropTypes.oneOf(['muted', 'play', 'any']),
+      PropTypes.oneOf(["muted", "play", "any"]),
     ]),
     controls: PropTypes.bool,
     height: PropTypes.number,
     loop: PropTypes.bool,
     muted: PropTypes.bool,
-    preload: PropTypes.oneOf(['auto', 'metadata', 'none']),
+    preload: PropTypes.oneOf(["auto", "metadata", "none"]),
     src: PropTypes.string,
     width: PropTypes.string,
   }),
   resources: PropTypes.shape({
-    sources: PropTypes.arrayOf(PropTypes.shape({
-      url: PropTypes.string,
-      type: PropTypes.string,
-    })),
+    sources: PropTypes.arrayOf(
+      PropTypes.shape({
+        url: PropTypes.string,
+        type: PropTypes.string,
+      })
+    ),
     poster: PropTypes.string,
   }),
   videojsOptions: PropTypes.shape({
@@ -139,11 +167,13 @@ Player.propTypes = {
     nativeControlsForTouch: PropTypes.bool,
     notSupportedMessage: PropTypes.string,
     playbackRates: PropTypes.arrayOf(PropTypes.number),
-    plugins: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      plugin: PropTypes.func,
-      options: PropTypes.object,
-    }))
+    plugins: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        plugin: PropTypes.func,
+        options: PropTypes.object,
+      })
+    ),
   }),
   hideList: PropTypes.arrayOf(PropTypes.string),
 
@@ -158,7 +188,7 @@ Player.propTypes = {
   onError: PropTypes.func.isRequired,
   onLoadedData: PropTypes.func.isRequired,
   onLoadedMetadata: PropTypes.func.isRequired,
-}
+};
 
 Player.defaultProps = {
   playerOptions: {
@@ -174,17 +204,17 @@ Player.defaultProps = {
   },
   hideList: [],
 
-  onReady: () => { },
-  onPlay: () => { },
-  onPause: () => { },
-  onWaiting: () => { },
-  onTimeUpdate: () => { },
-  onSeeking: () => { },
-  onSeeked: () => { },
-  onEnded: () => { },
-  onError: () => { },
-  onLoadedData: () => { },
-  onLoadedMetadata: () => { },
-}
+  onReady: () => {},
+  onPlay: () => {},
+  onPause: () => {},
+  onWaiting: () => {},
+  onTimeUpdate: () => {},
+  onSeeking: () => {},
+  onSeeked: () => {},
+  onEnded: () => {},
+  onError: () => {},
+  onLoadedData: () => {},
+  onLoadedMetadata: () => {},
+};
 
 export default Player;
