@@ -133,6 +133,7 @@ namespace Player {
     onError?: (error: MediaError, player: VideoJsPlayer) => void;
     onLoadedData?: (event: EventTarget, player: VideoJsPlayer) => void;
     onLoadedMetadata?: (event: EventTarget, player: VideoJsPlayer) => void;
+    onSuspended?: (event: EventTarget, player: VideoJsPlayer) => void;
   }
 }
 
